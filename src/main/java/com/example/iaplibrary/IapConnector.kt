@@ -88,8 +88,14 @@ class IapConnector : PurchasesUpdatedListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        inApp?.getInformation(listID.filter { it.type == "inapp" })
-                        subs?.getInformation(listID.filter { it.type == "subs" })
+                        val inappsubs = listID.filter { it.type == "inapp" }
+                        if (inappsubs.isNotEmpty()) {
+                            inApp?.getInformation(inappsubs)
+                        }
+                        val subssubs = listID.filter { it.type == "subs" }
+                        if(subssubs.isNotEmpty()){
+                            subs?.getInformation(listID.filter { it.type == "subs" })
+                        }
                     }
                 }
             }
@@ -156,7 +162,7 @@ class IapConnector : PurchasesUpdatedListener {
             it.purchaseTime = it.purchaseTime
             if (isSubscriptions) {
                 subscribeSuccess.postValue(it)
-             //   iapCallBack?.subscribeSuccess(it)
+                //   iapCallBack?.subscribeSuccess(it)
             }
         }
     }
