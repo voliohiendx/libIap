@@ -1,6 +1,7 @@
 package com.example.iaplibrary
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.android.billingclient.api.*
 import com.example.iaplibrary.model.IapIdModel
@@ -8,7 +9,7 @@ import com.example.iaplibrary.model.ProductModel
 import com.example.iaplibrary.model.ProductModel.Companion.convertDataToProduct
 import kotlinx.coroutines.*
 
-class IapConnector : PurchasesUpdatedListener {
+class IapConnector {
 
     private var activity: Activity? = null
     private var pathJson: String? = null
@@ -33,8 +34,17 @@ class IapConnector : PurchasesUpdatedListener {
         this.activity = activity
         this.pathJson = pathJson
 
-        billingClient = BillingClient.newBuilder(activity).setListener(this)
-            .enablePendingPurchases().build()
+        billingClient = BillingClient.newBuilder(activity).setListener { billingResult, purchases ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                for (purchase in purchases) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        handlePurchase(purchase, true)
+                    }
+                }
+            } else {
+                subscribeError.postValue(logEventFailed(billingResult.responseCode))
+            }
+        }.enablePendingPurchases().build()
 
         listID.addAll(IapIdModel.getDataInput(activity, pathJson))
 
@@ -68,20 +78,6 @@ class IapConnector : PurchasesUpdatedListener {
         startConnection()
     }
 
-    override fun onPurchasesUpdated(
-        billingResult: BillingResult,
-        purchases: MutableList<Purchase>?
-    ) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    handlePurchase(purchase, true)
-                }
-            }
-        } else {
-            subscribeError.postValue(logEventFailed(billingResult.responseCode))
-        }
-    }
 
     private fun startConnection() {
         billingClient?.startConnection(object : BillingClientStateListener {
@@ -93,7 +89,7 @@ class IapConnector : PurchasesUpdatedListener {
                             inApp?.getInformation(inappsubs)
                         }
                         val subssubs = listID.filter { it.type == "subs" }
-                        if(subssubs.isNotEmpty()){
+                        if (subssubs.isNotEmpty()) {
                             subs?.getInformation(listID.filter { it.type == "subs" })
                         }
                     }
@@ -149,8 +145,11 @@ class IapConnector : PurchasesUpdatedListener {
     }
 
     fun resetIap() {
-        subs?.unSubscribeIap()
-        inApp?.unSubscribeIap()
+        if (BuildConfig.DEBUG) {
+            Toast.makeText(activity, "Reset IAP", Toast.LENGTH_SHORT).show()
+            subs?.unSubscribeIap()
+            inApp?.unSubscribeIap()
+        }
     }
 
     private fun setDataCallBackSuccess(purchase: Purchase, isSubscriptions: Boolean) {
