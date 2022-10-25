@@ -1,2 +1,0 @@
-com/example/iaplibrary/BuildConfig.java
- com.example.iaplibrary.BuildConfig
