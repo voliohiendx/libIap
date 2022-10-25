@@ -1,9 +1,7 @@
 ### Init
-In MainActivity:
+In MyApplication:
  ```xml
-      override fun onCreate(savedInstanceState: Bundle?) {
-            IapConnector.getInstance().initIap(this, "iap_id.json")
-       }
+     IapConnector.initIap(this@MyApplication,"iap_id.json")
  ```
 File: iap_id.json
  ```xml
@@ -20,7 +18,7 @@ File: iap_id.json
 
 ### CheckPurchasesIap
  ```xml
-IapConnector.getInstance().isPurchasesIap.observe(viewLifecycleOwner) {
+IapConnector.isPurchasesIap.observe(viewLifecycleOwner) {
            it?.let {
                if(it){
                    // DA MUA IAP
@@ -33,29 +31,34 @@ IapConnector.getInstance().isPurchasesIap.observe(viewLifecycleOwner) {
 
 ### Buy
  ```xml
-IapConnector.getInstance().buyIap("iapforever")
+IapConnector.buyIap(activity,"iapforever")
 ```
 
 ### Reset Iap
  ```xml
-IapConnector.getInstance().resetIap()
+IapConnector.resetIap(activity)
 ```
 
-### Subscribe Success
+### AddListenerSub 
  ```xml
-IapConnector.getInstance().subscribeSuccess.observe(viewLifecycleOwner) {
-          // TRA VE THONG TIN GOI IAP VUA MUA THANH CONG
-}
+  IapConnector.addListenerSub(object : SubscribeInterface{
+            override fun subscribeSuccess(productModel: ProductModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun subscribeError(error: String) {
+                TODO("Not yet implemented")
+            }
+
+        })
 
 ```
-### Subscribe Error
+### RemoteListenerSub
 ```xml
- IapConnector.getInstance().subscribeError.observe(viewLifecycleOwner) {
-           // TRA VE THONG TIN LOI
- }
+ IapConnector.remoteListenerSub(object : SubscribeInterface)
  ```
  
 ### GetAllIapProduct
 ```xml
- IapConnector.getInstance().getAllProductModel()
+ IapConnector.getAllProductModel()
 ```
