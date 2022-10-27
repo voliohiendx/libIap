@@ -4,12 +4,9 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.github.jitpack'
-version = '1.0'
-
 android {
     compileSdkVersion 31
-  //  buildToolsVersion "30.0.2"
+    //  buildToolsVersion "30.0.2"
 
     defaultConfig {
         minSdkVersion 21
@@ -56,20 +53,18 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version_2"
 }
 
-task wrapper(type: Wrapper){
-    gradleVersion = '7.2'
-}
-
 afterEvaluate {
     publishing {
         publications {
-            // Creates a Maven publication called "release".
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.github.jitpack'
-                artifactId = 'iapvolio'
-                version = '1.0'
+
+                groupId = 'com.github.voliohiendx'
+                artifactId = 'libIap'
+                version = '0.0.1'
             }
         }
     }
 }
+
+
