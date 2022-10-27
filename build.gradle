@@ -1,7 +1,11 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
+
+group = 'com.github.jitpack'
+version = '1.0'
 
 android {
     compileSdkVersion 31
@@ -50,4 +54,22 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version_2"
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version_2"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version_2"
+}
+
+task wrapper(type: Wrapper){
+    gradleVersion = '7.2'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.jitpack'
+                artifactId = 'iapvolio'
+                version = '1.0'
+            }
+        }
+    }
 }
