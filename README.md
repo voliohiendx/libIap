@@ -41,7 +41,7 @@ IapConnector.resetIap(activity)
 
 ### AddListenerSub 
  ```xml
-  IapConnector.addListenerSub(object : SubscribeInterface{
+  IapConnector.addIAPListener(object : SubscribeInterface{
             override fun subscribeSuccess(productModel: ProductModel) {
                 TODO("Not yet implemented")
             }
@@ -55,7 +55,7 @@ IapConnector.resetIap(activity)
 ```
 ### RemoteListenerSub
 ```xml
- IapConnector.remoteListenerSub(object : SubscribeInterface)
+ IapConnector.removeIAPListener(object : SubscribeInterface)
  ```
  
 ### GetAllIapProduct

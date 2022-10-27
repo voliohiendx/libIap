@@ -81,11 +81,11 @@ object IapConnector {
         startConnection()
     }
 
-    fun addListenerSub(listener: SubscribeInterface) {
+    fun addIAPListener(listener: SubscribeInterface) {
         subscribeInterface.add(listener)
     }
 
-    fun remoteListenerSub(listener: SubscribeInterface) {
+    fun removeIAPListener(listener: SubscribeInterface) {
         subscribeInterface.remove(listener)
     }
 
